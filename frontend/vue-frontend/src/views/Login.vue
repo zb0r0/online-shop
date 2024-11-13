@@ -32,6 +32,8 @@ export default {
           password: this.password
         });
         this.message = response.data.message;
+        localStorage.setItem('token', response.data.token);
+        this.$router.push('/');
       } catch (error) {
         if (error.response && error.response.data) {
           this.message = error.response.data.message;

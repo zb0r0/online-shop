@@ -1,0 +1,17 @@
+<template>
+  <div>
+    <h1>Welcome to Our Site</h1>
+    <router-link to="/login">Login</router-link> |
+    <router-link to="/register">Register</router-link>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HomePage'
+};
+</script>
+
+<style>
+/* Dodaj styl, jeśli potrzebne */
+</style>

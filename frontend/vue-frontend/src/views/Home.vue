@@ -1,24 +1,28 @@
 <template>
   <div>
-    <h1>Welcome to Our Site</h1>
+    <h1>Witaj w naszym sklepie</h1>
     <div v-if="isLoggedIn">
-      <p>Welcome back, {{ username }}</p>
-      <button @click="logout">Logout</button>
+      <p>Cześć, {{ username }}</p>
+      <button @click="logout">Wyloguj się</button>
       <div v-if="isAdmin">
         <router-link to="/add_product">
-          <button>Add Product</button>
+          <button>Dodaj produkty</button>
         </router-link>
       </div>
     </div>
     <div v-else>
-      <router-link to="/login">Login</router-link> |
-      <router-link to="/register">Register</router-link>
+      <router-link to="/login">Logowanie</router-link> |
+      <router-link to="/register">Rejestracja</router-link>
     </div>
+    <div>
+    <ProductGrid />
+  </div>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import ProductGrid from '@/views/ProductGrid.vue';
 
 export default {
   name: 'HomePage',
@@ -28,6 +32,9 @@ export default {
       isAdmin: false,
       username: ''
     };
+  },
+  components: {
+    ProductGrid
   },
   mounted() {
     this.checkLogin();

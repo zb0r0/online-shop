@@ -95,6 +95,22 @@ def add_product():
     return jsonify({'message': 'Product added successfully'}), 201
 
 
+@app.route('/products', methods=['GET'])
+def get_products():
+    products = Product.query.order_by(Product.stock.desc()).all()
+    products_list = [
+        {
+            'id': product.id,
+            'name': product.name,
+            'price': float(product.price),
+            'stock': product.stock,
+            'image_url': product.image_url
+        }
+        for product in products
+    ]
+    return jsonify(products_list), 200
+
+
 def generate_token(user_id):
     expiration = datetime.utcnow() + timedelta(hours=1)  # Token wygasa po godzinie
     token = jwt.encode({'user_id': user_id, 'exp': expiration}, app.config['SECRET_KEY'], algorithm='HS256')

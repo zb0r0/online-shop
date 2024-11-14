@@ -1,36 +1,36 @@
 <template>
   <div>
-    <h2>Add New Product</h2>
+    <h2>Dodawanie produktów</h2>
     <form @submit.prevent="addProduct">
-      <label for="name">Name:</label>
+      <label for="name">Nazwa:</label>
       <input type="text" v-model="name" required /><br><br>
 
-      <label for="description">Description:</label>
+      <label for="description">Opis:</label>
       <textarea v-model="description" required></textarea><br><br>
 
-      <label for="price">Price:</label>
+      <label for="price">Cena:</label>
       <input type="number" v-model="price" required /><br><br>
 
-      <label for="category">Category:</label>
+      <label for="category">Kategoria:</label>
       <input type="text" v-model="category" required /><br><br>
 
-      <label for="stock">Stock:</label>
+      <label for="stock">Ilość:</label>
       <input type="number" v-model="stock" /><br><br>
 
-      <label for="gender">Gender:</label>
+      <label for="gender">Płeć:</label>
       <select v-model="gender" required>
-        <option value="male">Male</option>
-        <option value="female">Female</option>
+        <option value="male">Mężczyzna</option>
+        <option value="female">Kobieta</option>
       </select>
       <br><br>
 
-      <label for="image_url">Image URL:</label>
+      <label for="image_url">URL zdjęcia:</label>
       <input type="text" v-model="image_url" /><br><br>
 
-      <label for="tags">Tags (comma separated):</label>
+      <label for="tags">Tagi (po przecinku):</label>
       <input type="text" v-model="tags" /><br><br>
 
-      <button type="submit">Add Product</button>
+      <button type="submit">Dodaj produkt</button>
     </form>
 
     <p v-if="message">{{ message }}</p>
@@ -59,7 +59,7 @@ export default {
     async addProduct() {
       const token = localStorage.getItem('token');
       if (!token) {
-        this.message = 'You must be logged in to add products!';
+        this.message = 'Musisz być zalogowany, żeby dodać produkt!';
         return;
       }
 

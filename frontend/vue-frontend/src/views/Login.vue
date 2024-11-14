@@ -2,9 +2,9 @@
   <div>
     <h2>Login</h2>
     <form @submit.prevent="login">
-      <label for="username">Username:</label>
+      <label for="username">Nazwa użytkownika:</label>
       <input type="text" v-model="username" required /><br><br>
-      <label for="password">Password:</label>
+      <label for="password">Hasło:</label>
       <input type="password" v-model="password" required /><br><br>
       <button type="submit">Login</button>
     </form>
@@ -38,7 +38,7 @@ export default {
         if (error.response && error.response.data) {
           this.message = error.response.data.message;
         } else {
-          this.message = 'An error occurred';
+          this.message = 'Wystąpił error';
         }
       }
     }

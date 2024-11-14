@@ -2,22 +2,22 @@
   <div>
     <h2>Register</h2>
     <form @submit.prevent="register">
-      <label for="username">Username:</label>
+      <label for="username">Nazwa użytkownika:</label>
       <input type="text" v-model="username" required /><br><br>
 
-      <label for="password">Password:</label>
+      <label for="password">Hasło:</label>
       <input type="password" v-model="password" required /><br><br>
 
-      <label for="birthdate">Birthdate:</label>
+      <label for="birthdate">Data urodzenia:</label>
       <input type="date" v-model="birthdate" required /><br><br>
 
-      <label for="gender">Gender:</label>
+      <label for="gender">Płeć:</label>
       <select v-model="gender" required>
-        <option value="Male">Male</option>
-        <option value="Female">Female</option>
+        <option value="Male">Mężczyzna</option>
+        <option value="Female">Kobieta</option>
       </select><br><br>
 
-      <label for="location">Location:</label>
+      <label for="location">Lokalizacja:</label>
       <select v-model="location" required>
         <option value="Dolnośląskie">Dolnośląskie</option>
         <option value="Kujawsko-Pomorskie">Kujawsko-Pomorskie</option>
@@ -37,7 +37,7 @@
         <option value="Zachodniopomorskie">Zachodniopomorskie</option>
       </select><br><br>
 
-      <button type="submit">Register</button>
+      <button type="submit">Załóż konto</button>
     </form>
     <p v-if="message">{{ message }}</p>
   </div>

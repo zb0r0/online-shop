@@ -27,8 +27,8 @@ export default {
   data() {
     return {
       products: [],
-      rowsToShow: 5, // liczba wierszy do wyświetlenia na raz
-      columnsPerRow: 5, // liczba kolumn na wiersz
+      rowsToShow: 5,
+      columnsPerRow: 5,
     };
   },
   computed: {
@@ -50,11 +50,25 @@ export default {
       }
     },
     showMore() {
-      this.rowsToShow += 5; // zwiększamy liczbę widocznych wierszy
+      this.rowsToShow += 5;
     },
-    addToCart(productId) {
-      // Dodaj logikę dodawania do koszyka
-      console.log(`Added product ${productId} to cart`);
+    async addToCart(productId) {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert('Musisz być zalogowany, aby dodać produkty do koszyka!');
+        return;
+      }
+
+      try {
+        const response = await axios.post(
+          'http://localhost:5000/cart/add',
+          { product_id: productId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        alert(response.data.message);
+      } catch (error) {
+        alert(error.response?.data?.message || 'Wystąpił błąd');
+      }
     },
   },
   mounted() {
@@ -73,9 +87,13 @@ export default {
   border: 1px solid #ddd;
   padding: 10px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 .product-card img {
   max-width: 100%;
   height: auto;
+  flex-grow: 1; /* Obrazek zajmuje dostępną przestrzeń w pionie */
 }
 </style>

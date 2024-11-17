@@ -69,6 +69,18 @@ class User(db.Model):
         return f'<User {self.username}>'
 
 
+class CartItem(db.Model):
+    __tablename__ = 'cart_items'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    product_id = db.Column(db.Integer, db.ForeignKey('products.id'), nullable=False)
+    quantity = db.Column(db.Integer, default=1, nullable=False)
+    added_at = db.Column(db.DateTime, default=datetime.utcnow)
+
+    product = db.relationship('Product', backref='cart_items')
+    user = db.relationship('User', backref='cart_items')
+
+
 @app.route('/add_product', methods=['POST'])
 @admin_required
 def add_product():
@@ -109,6 +121,158 @@ def get_products():
         for product in products
     ]
     return jsonify(products_list), 200
+
+
+@app.route('/cart/add', methods=['POST'])
+def add_to_cart():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 401
+
+    try:
+        token = token.split(' ')[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity', 1)
+
+    if not product_id:
+        return jsonify({'message': 'Product ID is required'}), 400
+
+    product = Product.query.get(product_id)
+    if not product:
+        return jsonify({'message': 'Product not found'}), 404
+
+    cart_item = CartItem.query.filter_by(user_id=user_id, product_id=product_id).first()
+    if cart_item:
+        cart_item.quantity += quantity
+    else:
+        cart_item = CartItem(user_id=user_id, product_id=product_id, quantity=quantity)
+        db.session.add(cart_item)
+
+    db.session.commit()
+    return jsonify({'message': 'Product added to cart'}), 200
+
+
+@app.route('/cart/remove', methods=['DELETE'])
+def remove_from_cart():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 401
+
+    try:
+        token = token.split(' ')[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+    data = request.get_json()
+    product_id = data.get('product_id')
+
+    if not product_id:
+        return jsonify({'message': 'Product ID is required'}), 400
+
+    cart_item = CartItem.query.filter_by(user_id=user_id, product_id=product_id).first()
+    if not cart_item:
+        return jsonify({'message': 'Product not found in cart'}), 404
+
+    db.session.delete(cart_item)
+    db.session.commit()
+    return jsonify({'message': 'Product removed from cart'}), 200
+
+
+@app.route('/cart/update_quantity', methods=['PUT'])
+def update_quantity():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 401
+
+    try:
+        token = token.split(' ')[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+    data = request.get_json()
+    product_id = data.get('product_id')
+    quantity = data.get('quantity')
+
+    if not product_id or quantity is None:
+        return jsonify({'message': 'Product ID and quantity are required'}), 400
+
+    cart_item = CartItem.query.filter_by(user_id=user_id, product_id=product_id).first()
+    if not cart_item:
+        return jsonify({'message': 'Product not found in cart'}), 404
+
+    if quantity <= 0:
+        db.session.delete(cart_item)
+    else:
+        cart_item.quantity = quantity
+
+    db.session.commit()
+    return jsonify({'message': 'Quantity updated successfully'}), 200
+
+
+@app.route('/cart', methods=['GET'])
+def view_cart():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 401
+
+    try:
+        token = token.split(' ')[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401
+
+    cart_items = CartItem.query.filter_by(user_id=user_id).all()
+    cart_details = [
+        {
+            'id': item.id,
+            'product_id': item.product.id,
+            'name': item.product.name,
+            'price': str(item.product.price),
+            'image_url': item.product.image_url,
+            'quantity': item.quantity,
+        } for item in cart_items
+    ]
+    total_price = sum(float(item['price']) * item['quantity'] for item in cart_details)
+
+    return jsonify({'cart': cart_details, 'total_price': str(total_price)}), 200
+
+
+@app.route('/cart/count', methods=['GET'])
+def cart_count():
+    token = request.headers.get('Authorization')
+    if not token:
+        return jsonify({'count': 0}), 200  # Puste koszyki dla niezalogowanych
+
+    try:
+        token = token.split(' ')[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
+    except jwt.ExpiredSignatureError:
+        return jsonify({'count': 0}), 200
+    except jwt.InvalidTokenError:
+        return jsonify({'count': 0}), 200
+
+    count = db.session.query(db.func.sum(CartItem.quantity)).filter_by(user_id=user_id).scalar() or 0
+    return jsonify({'count': count}), 200
 
 
 def generate_token(user_id):

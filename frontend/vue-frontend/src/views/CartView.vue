@@ -102,7 +102,7 @@ export default {
     },
 
     checkout() {
-      alert('Checkout functionality coming soon!');
+      this.$router.push({ name: 'OrderPage' });
     },
   },
   mounted() {

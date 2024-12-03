@@ -7,8 +7,16 @@
         :key="product.id"
         class="product-card"
       >
-        <img :src="product.image_url" alt="Product Image" />
-        <h3>{{ product.name }}</h3>
+        <!-- Obrazek jako odnośnik -->
+        <router-link :to="`/product/${product.id}`">
+          <img :src="product.image_url" alt="Product Image" />
+        </router-link>
+
+        <!-- Nazwa produktu jako odnośnik -->
+        <router-link :to="`/product/${product.id}`">
+          <h3>{{ product.name }}</h3>
+        </router-link>
+
         <p>Cena: {{ product.price }}zł</p>
         <p>W magazynie: {{ product.stock }}</p>
         <button @click="addToCart(product.id)">Dodaj do koszyka</button>
@@ -95,5 +103,9 @@ export default {
   max-width: 100%;
   height: auto;
   flex-grow: 1; /* Obrazek zajmuje dostępną przestrzeń w pionie */
+  cursor: pointer; /* Dodanie wskazówki kliknięcia */
+}
+.product-card h3 {
+  cursor: pointer; /* Dodanie wskazówki kliknięcia */
 }
 </style>

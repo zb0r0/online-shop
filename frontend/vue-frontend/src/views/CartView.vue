@@ -3,9 +3,13 @@
     <h2>Twój koszyk</h2>
     <div v-if="cart.length > 0">
       <div v-for="item in cart" :key="item.id" class="cart-item">
-        <img :src="item.image_url" alt="Product Image" />
+        <router-link :to="`/product/${item.product_id}`">
+          <img :src="item.image_url" alt="Product Image" />
+        </router-link>
         <div>
-          <h3>{{ item.name }}</h3>
+          <router-link :to="`/product/${item.product_id}`">
+            <h3>{{ item.name }}</h3>
+          </router-link>
           <p>Cena: {{ item.price }}zł</p>
           <p>Ilość:
             <input type="number" v-model="item.quantity" min="1" @blur="updateQuantity(item)">
@@ -37,7 +41,7 @@ export default {
     async fetchCart() {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to view your cart!');
+        alert('Musisz być zalogowany, aby zobaczyć swój koszyk!');
         return;
       }
 
@@ -48,14 +52,14 @@ export default {
         this.cart = response.data.cart;
         this.totalPrice = response.data.total_price;
       } catch (error) {
-        alert(error.response?.data?.message || 'An error occurred');
+        alert(error.response?.data?.message || 'Wystąpił błąd');
       }
     },
 
     async updateQuantity(item) {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to update the quantity!');
+        alert('Musisz być zalogowany, aby zaktualizować ilość!');
         return;
       }
 
@@ -70,17 +74,16 @@ export default {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // Aktualizacja ceny po zmianie ilości
         this.totalPrice = response.data.total_price;
       } catch (error) {
-        alert(error.response?.data?.message || 'An error occurred');
+        alert(error.response?.data?.message || 'Wystąpił błąd');
       }
     },
 
     async removeFromCart(item) {
       const token = localStorage.getItem('token');
       if (!token) {
-        alert('You must be logged in to remove products from your cart!');
+        alert('Musisz być zalogowany, aby usunąć produkty z koszyka!');
         return;
       }
 
@@ -92,12 +95,10 @@ export default {
             data: { product_id: item.product_id },
           }
         );
-        // Usuwanie produktu z koszyka
         this.cart = this.cart.filter(cartItem => cartItem.id !== item.id);
-        // Aktualizacja łącznej ceny
         this.totalPrice = this.cart.reduce((total, item) => total + (item.price * item.quantity), 0);
       } catch (error) {
-        alert(error.response?.data?.message || 'An error occurred');
+        alert(error.response?.data?.message || 'Wystąpił błąd');
       }
     },
 
@@ -122,6 +123,11 @@ export default {
   width: 100px;
   height: auto;
   margin-right: 20px;
+  cursor: pointer; /* Dodanie wskazówki kliknięcia */
+}
+
+.cart-item h3 {
+  cursor: pointer; /* Dodanie wskazówki kliknięcia */
 }
 
 input[type="number"] {

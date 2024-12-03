@@ -44,7 +44,7 @@ def create_order():
 
     # Przygotowanie danych do płatności
     order_data = {
-        "notifyUrl": "http://127.0.0.1:5000/notify",
+        "notifyUrl": "http://192.168.18.2:8080/notify",
         "customerIp": request.remote_addr,
         "merchantPosId": PAYU_POS_ID,
         "description": "Sklep internetowy - zamówienie",
@@ -64,7 +64,7 @@ def create_order():
                 "quantity": item['quantity']
             } for item in cart
         ],
-        "continueUrl": "http://127.0.0.1:5000/notify"
+        "continueUrl": "http://192.168.18.2:8080/notify"
     }
 
     # Pobranie tokenu dostępu PayU
@@ -88,13 +88,11 @@ def create_order():
     print("Raw response text:", response.text)
 
     if response.status_code in (200, 201):
-        # Przekierowanie na stronę płatności PayU
         return jsonify({
             'payment_url': response.json().get('redirectUri'),
             'total': total_price
         }), 200
     elif response.status_code == 302:
-        # Przekierowanie na podstawie nagłówków
         return jsonify({'payment_url': response.headers.get('Location')}), 200
     else:
         # Obsługa błędów

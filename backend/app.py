@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": ["http://192.168.18.2:8080", "http://48.209.24.37:8080"]}})
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:123123@48.209.24.37/sklep'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'secretKey:D'

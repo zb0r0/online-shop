@@ -27,7 +27,7 @@ export default {
   methods: {
     async login() {
       try {
-        const response = await axios.post('http://localhost:5000/login', {
+        const response = await axios.post('http://48.209.24.37:5000/login', {
           username: this.username,
           password: this.password
         });

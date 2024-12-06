@@ -143,7 +143,7 @@ def get_cart_for_user(user_id):
     cart_items = CartItem.query.filter_by(user_id=user_id).all()
     cart = [
         {
-            'product_id': item.product_id,
+            'id': item.product_id,
             'quantity': item.quantity,
             'price': float(item.product.price),
             'name': item.product.name
@@ -177,10 +177,9 @@ def update_order_status(order_id, status):
     return jsonify({'message': 'Order status updated successfully'}), 200
 
 
-
 def reduce_product_quantities(products):
     for product in products:
-        product_id = product['id']
+        product_id = product['product_id']
         quantity = product['quantity']
         product = Product.query.get(product_id)
         if product and product.stock >= quantity:

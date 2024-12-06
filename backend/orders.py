@@ -64,7 +64,7 @@ def create_order():
                 "quantity": item['quantity']
             } for item in cart
         ],
-        "continueUrl": "https://48.209.24.37:8080/notify"
+        "continueUrl": "http://48.209.24.37:8080/notify"
     }
 
     # Pobranie tokenu dostępu PayU

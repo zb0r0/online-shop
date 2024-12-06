@@ -85,6 +85,21 @@ def create_order():
         return jsonify({'message': f'Error during PayU API call: {str(e)}'}), 500
 
     if response.status_code in (200, 201):
+        # Zapisz zamówienie do bazy danych
+        order = Order(
+            first_name=data['first_name'],
+            last_name=data['last_name'],
+            address=data.get('address', ''),
+            zip_code=data.get('zip_code', ''),
+            city=data.get('city', ''),
+            phone=data['phone'],
+            total=total_price,
+            payu_order_id=response.json().get('orderId'),
+            status='PENDING'
+        )
+        db.session.add(order)
+        db.session.commit()
+
         return jsonify({
             'payment_url': response.json().get('redirectUri'),
             'total': total_price
@@ -98,6 +113,7 @@ def create_order():
             'details': response.text,
             'status_code': response.status_code
         }), 500
+
 
 
 def get_payu_access_token():

@@ -54,7 +54,7 @@ export default {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://48.209.24.37:5000/check_login', {
+          const response = await axios.get('https://48.209.24.37:5000/check_login', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.isLoggedIn = true;
@@ -69,7 +69,7 @@ export default {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://48.209.24.37:5000/cart', {
+          const response = await axios.get('https://48.209.24.37:5000/cart', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.cart = response.data.cart;

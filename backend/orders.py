@@ -35,7 +35,7 @@ def create_order():
 
     # Sprawdzenie dostępności produktów w koszyku
     for item in cart:
-        product = get_product_by_id(item['product_id'])
+        product = get_product_by_id(item['id'])
         if product['quantity'] < item['quantity']:
             return jsonify({'message': f"Product {product['name']} is out of stock"}), 400
 
@@ -179,7 +179,7 @@ def update_order_status(order_id, status):
 
 def reduce_product_quantities(products):
     for product in products:
-        product_id = product['product_id']
+        product_id = product['id']
         quantity = product['quantity']
         product = Product.query.get(product_id)
         if product and product.stock >= quantity:

@@ -165,7 +165,7 @@ def get_product_by_id(product_id):
 
 
 def update_order_status(order_id, status):
-    order = Order.query.get(order_id)
+    order = Order.query.filter_by(payu_order_id=order_id).first()
     if not order:
         return jsonify({'message': 'Order not found'}), 404
 
@@ -174,6 +174,7 @@ def update_order_status(order_id, status):
     db.session.commit()
 
     return jsonify({'message': 'Order status updated successfully'}), 200
+
 
 
 def reduce_product_quantities(products):

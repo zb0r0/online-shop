@@ -1,5 +1,6 @@
 from datetime import datetime
 from app import db
+from sqlalchemy.dialects.postgresql import VARCHAR
 
 
 class Product(db.Model):
@@ -60,6 +61,9 @@ class Order(db.Model):
     phone = db.Column(db.String(9), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    payu_order_id = db.Column(db.String(50), unique=True, nullable=True)  # Dodane wcześniej
+    status = db.Column(db.String(50), nullable=True, default='PENDING')  # Nowa kolumna
 
     def __repr__(self):
         return f'<Order {self.id}>'
+

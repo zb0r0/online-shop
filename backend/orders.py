@@ -44,7 +44,7 @@ def create_order():
 
     # Przygotowanie danych do płatności
     order_data = {
-        "notifyUrl": "http://48.209.24.37:5000/notify",
+        "notifyUrl": "https://48.209.24.37:5000/notify",
         "customerIp": request.remote_addr,
         "merchantPosId": PAYU_POS_ID,
         "description": "Sklep internetowy - zamówienie",
@@ -64,7 +64,7 @@ def create_order():
                 "quantity": item['quantity']
             } for item in cart
         ],
-        "continueUrl": "http://48.209.24.37:8080/notify"
+        "continueUrl": "https://48.209.24.37:8080/notify"
     }
 
     # Pobranie tokenu dostępu PayU

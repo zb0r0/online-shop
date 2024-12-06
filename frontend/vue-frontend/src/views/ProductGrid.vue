@@ -51,7 +51,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('http://48.209.24.37:5000/products');
+        const response = await axios.get('${process.env.VUE_APP_API_URL}/products');
         this.products = response.data;
       } catch (error) {
         console.error("Error fetching products:", error);
@@ -69,7 +69,7 @@ export default {
 
       try {
         const response = await axios.post(
-          'http://48.209.24.37:5000/cart/add',
+          '${process.env.VUE_APP_API_URL}/cart/add',
           { product_id: productId },
           { headers: { Authorization: `Bearer ${token}` } }
         );

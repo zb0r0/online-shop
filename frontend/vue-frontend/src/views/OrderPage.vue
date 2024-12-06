@@ -90,7 +90,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('http://48.209.24.37:5000/cart', {
+        const response = await axios.get('${process.env.VUE_APP_API_URL}/cart', {
           headers: { Authorization: `Bearer ${token}` }
         });
         this.cart = response.data.cart;
@@ -110,7 +110,7 @@ export default {
       try {
         const orderData = { ...this.form, total: this.calculatedTotal };  // Dodajemy obliczoną kwotę
         const response = await axios.post(
-          'http://48.209.24.37:5000/orders',
+          '${process.env.VUE_APP_API_URL}/orders',
           orderData,
           { headers: { Authorization: `Bearer ${token}` } }
         );

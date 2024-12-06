@@ -44,12 +44,12 @@ def create_order():
 
     # Przygotowanie danych do płatności
     order_data = {
-        "notifyUrl": "http://48.209.24.37:8080/notify",
+        "notifyUrl": "http://48.209.24.37:5000/notify",
         "customerIp": request.remote_addr,
         "merchantPosId": PAYU_POS_ID,
         "description": "Sklep internetowy - zamówienie",
         "currencyCode": "PLN",
-        "totalAmount": str(int(total_price * 100)),  # Kwota w groszach
+        "totalAmount": str(int(total_price * 100)),
         "buyer": {
             "email": data['email'],
             "phone": data['phone'],
@@ -60,7 +60,7 @@ def create_order():
         "products": [
             {
                 "name": item['name'],
-                "unitPrice": str(int(item['price'] * 100)),  # Cena w groszach
+                "unitPrice": str(int(item['price'] * 100)),
                 "quantity": item['quantity']
             } for item in cart
         ],
@@ -129,6 +129,7 @@ def get_payu_access_token():
 def notify():
     # Obsługa notyfikacji PayU po udanej płatności
     payload = request.json
+    print(payload)
     if payload['order']['status'] == 'COMPLETED':
         update_order_status(payload['order']['orderId'], 'COMPLETED')
         reduce_product_quantities(payload['order']['products'])

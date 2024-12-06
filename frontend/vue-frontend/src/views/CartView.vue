@@ -46,7 +46,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('http://48.209.24.37:5000/cart', {
+        const response = await axios.get('${process.env.VUE_APP_API_URL}/cart', {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.cart = response.data.cart;
@@ -65,7 +65,7 @@ export default {
 
       try {
         const response = await axios.put(
-          'http://48.209.24.37:5000/cart/update_quantity',
+          '${process.env.VUE_APP_API_URL}/cart/update_quantity',
           {
             product_id: item.product_id,
             quantity: item.quantity,
@@ -89,7 +89,7 @@ export default {
 
       try {
         await axios.delete(
-          'http://48.209.24.37:5000/cart/remove',
+          '${process.env.VUE_APP_API_URL}/cart/remove',
           {
             headers: { Authorization: `Bearer ${token}` },
             data: { product_id: item.product_id },

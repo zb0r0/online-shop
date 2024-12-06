@@ -59,6 +59,7 @@ def create_order():
         },
         "products": [
             {
+                "id": item['product_id'],
                 "name": item['name'],
                 "unitPrice": str(int(item['price'] * 100)),
                 "quantity": item['quantity']

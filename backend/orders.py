@@ -130,7 +130,7 @@ def notify():
     if payload['order']['status'] == 'COMPLETED':
         update_order_status(payload['order']['orderId'], 'COMPLETED')
         reduce_product_quantities(payload['order']['products'])
-        reset_cart(payload['order']['buyer']['email'])
+        reset_cart()
         return '', 200
     return '', 400
 

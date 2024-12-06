@@ -179,11 +179,19 @@ def update_order_status(order_id, status):
 
 def reduce_product_quantities(products):
     for product in products:
-        product_id = product['id']
-        quantity = product['quantity']
-        product = Product.query.get(product_id)
-        if product and product.stock >= quantity:
-            product.stock -= quantity
+        product_name = product['name']
+        quantity = int(product['quantity'])
+
+        product_in_db = Product.query.filter_by(name=product_name).first()
+
+        if product_in_db:
+            if product_in_db.stock >= quantity:
+                product_in_db.stock -= quantity
+            else:
+                logging.error(f"Insufficient stock for product: {product_name}")
+        else:
+            logging.error(f"Product not found in database: {product_name}")
+
     db.session.commit()
 
 

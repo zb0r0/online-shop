@@ -84,10 +84,6 @@ def create_order():
     except Exception as e:
         return jsonify({'message': f'Error during PayU API call: {str(e)}'}), 500
 
-    # Logowanie odpowiedzi
-    print("Response status code:", response.status_code)
-    print("Raw response text:", response.text)
-
     if response.status_code in (200, 201):
         return jsonify({
             'payment_url': response.json().get('redirectUri'),
@@ -195,8 +191,33 @@ def reduce_product_quantities(products):
     db.session.commit()
 
 
-def reset_cart(email):
-    user = User.query.filter_by(email=email).first()
-    if user:
-        CartItem.query.filter_by(user_id=user.id).delete()
-        db.session.commit()
+@app.route('/reset_cart', methods=['POST'])
+def reset_cart():
+    token = request.headers.get('Authorization')
+
+    if not token:
+        return jsonify({'message': 'Token is missing!'}), 403
+
+    try:
+        token = token.split(" ")[1]
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=["HS256"])
+        user_id = decoded_token['user_id']
+
+        # Sprawdzamy, czy użytkownik istnieje
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+
+        # Resetowanie koszyka dla zalogowanego użytkownika
+        cart = CartItem.query.filter_by(user_id=user.id).first()
+        if cart:
+            db.session.delete(cart)  # Usuwamy koszyk
+            db.session.commit()
+            return jsonify({'message': 'Cart reset successfully'}), 200
+        else:
+            return jsonify({'message': 'No cart found for this user'}), 404
+
+    except jwt.ExpiredSignatureError:
+        return jsonify({'message': 'Token expired'}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({'message': 'Invalid token'}), 401

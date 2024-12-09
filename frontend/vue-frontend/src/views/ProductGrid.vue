@@ -1,23 +1,20 @@
 <template>
   <div>
-    <h2>Produkty</h2>
+    <h2 v-if="category">Produkty w kategorii: {{ category }}</h2>
+    <h2 v-else>Produkty</h2>
     <div class="product-grid">
       <div
         v-for="product in paginatedProducts"
         :key="product.id"
         class="product-card"
       >
-        <!-- Obrazek jako odnośnik -->
         <router-link :to="`/product/${product.id}`">
           <img :src="product.image_url" alt="Product Image" />
         </router-link>
-
-        <!-- Nazwa produktu jako odnośnik -->
         <router-link :to="`/product/${product.id}`">
           <h3>{{ product.name }}</h3>
         </router-link>
-
-        <p>Cena: {{ product.price }}zł</p>
+        <p>Cena: {{ product.price }} zł</p>
         <p>W magazynie: {{ product.stock }}</p>
         <button @click="addToCart(product.id)">Dodaj do koszyka</button>
       </div>
@@ -32,6 +29,12 @@ import axios from 'axios';
 
 export default {
   name: 'ProductGrid',
+  props: {
+    category: {
+      type: String,
+      default: null,
+    },
+  },
   data() {
     return {
       products: [],
@@ -51,10 +54,13 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const response = await axios.get('https://48.209.24.37:5000/products');
+        const endpoint = this.category
+          ? `http://localhost:5000/category/${this.category}`
+          : 'http://localhost:5000/products';
+        const response = await axios.get(endpoint);
         this.products = response.data;
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error('Error fetching products:', error);
       }
     },
     showMore() {
@@ -69,7 +75,7 @@ export default {
 
       try {
         const response = await axios.post(
-          'https://48.209.24.37:5000/cart/add',
+          'http://localhost:5000/cart/add',
           { product_id: productId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -79,11 +85,15 @@ export default {
       }
     },
   },
+  watch: {
+    category: 'fetchProducts', // Odswież produkty po zmianie kategorii
+  },
   mounted() {
     this.fetchProducts();
   },
 };
 </script>
+
 
 <style scoped>
 .product-grid {

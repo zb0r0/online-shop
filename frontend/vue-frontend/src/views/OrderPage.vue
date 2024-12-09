@@ -90,7 +90,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('https://48.209.24.37:5000/cart', {
+        const response = await axios.get('http://localhost:5000/cart', {
           headers: { Authorization: `Bearer ${token}` }
         });
         this.cart = response.data.cart;
@@ -110,7 +110,7 @@ export default {
       try {
         const orderData = { ...this.form, total: this.calculatedTotal };  // Dodajemy obliczoną kwotę
         const response = await axios.post(
-          'https://48.209.24.37:5000/orders',
+          'http://localhost:5000/orders',  // Zmiana na właściwą trasę
           orderData,
           { headers: { Authorization: `Bearer ${token}` } }
         );

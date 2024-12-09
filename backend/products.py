@@ -65,3 +65,41 @@ def get_product(product_id):
     }
     return jsonify(product_details), 200
 
+
+@app.route('/category/<string:category>', methods=['GET'])
+def get_products_by_category(category):
+    products = Product.query.filter(Product.category.ilike(category)).all()
+    if not products:
+        return jsonify({'message': 'No products found in this category'}), 404
+
+    products_list = [
+        {
+            'id': product.id,
+            'name': product.name,
+            'description': product.description,
+            'price': float(product.price),
+            'stock': product.stock,
+            'image_url': product.image_url
+        }
+        for product in products
+    ]
+    return jsonify(products_list), 200
+
+
+@app.route('/products_by_category', methods=['GET'])
+def get_normalized_categories():
+    # Pobierz wszystkie unikalne kategorie z bazy danych
+    categories = db.session.query(Product.category).distinct().all()
+
+    # Jeśli nie ma kategorii, zwróć pustą listę
+    if not categories:
+        return jsonify([]), 200
+
+    # Wyciągnij kategorie, normalizuj i usuń duplikaty
+    normalized_categories = {category[0].strip().capitalize() for category in categories if category[0]}
+
+    # Zamień zbiór na posortowaną listę
+    normalized_categories = sorted(normalized_categories)
+
+    return jsonify(normalized_categories), 200
+

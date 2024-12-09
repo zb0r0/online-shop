@@ -7,6 +7,7 @@ import CartPage from '@/views/CartView.vue';
 import CheckoutView from '@/views/OrderPage.vue';
 import RedirectToHome from '@/views/RedirectToHome.vue';
 import ProductDetails from "@/views/ProductDetails";
+import Category from "@/views/Category.vue";
 
 const routes = [
   { path: '/', component: HomePage },
@@ -17,6 +18,7 @@ const routes = [
   { path: '/checkout', name: 'OrderPage', component: CheckoutView },
   { path: '/notify', component: RedirectToHome },
   { path: '/product/:id', component: ProductDetails },
+  { path: '/category/:category', component: Category },
 ];
 
 const router = createRouter({

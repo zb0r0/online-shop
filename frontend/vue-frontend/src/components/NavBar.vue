@@ -5,14 +5,23 @@
         <h1 class="navbar-title">Sklep odzieżowy</h1>
       </router-link>
     </div>
-    <div class="navbar-center" v-if="isLoggedIn">
-      <router-link to="/cart">
-        <button>Koszyk ({{ cartCount }})</button>
-      </router-link>
-      <div v-if="isAdmin">
-        <router-link to="/add_product">
-          <button>Dodaj produkty</button>
+    <div class="navbar-center">
+      <div class="categories">
+        <div v-for="category in categories" :key="category" class="dropdown">
+          <router-link :to="'/category/' + category">
+            <button>{{ category }}</button>
+          </router-link>
+        </div>
+      </div>
+      <div v-if="isLoggedIn">
+        <router-link to="/cart">
+          <button>Koszyk ({{ cartCount }})</button>
         </router-link>
+        <div v-if="isAdmin">
+          <router-link to="/add_product">
+            <button>Dodaj produkty</button>
+          </router-link>
+        </div>
       </div>
     </div>
     <div class="navbar-right">
@@ -38,6 +47,7 @@ export default {
       isAdmin: false,
       username: '',
       cart: [],
+      categories: [], // Kategorie produktów
     };
   },
   computed: {
@@ -48,13 +58,14 @@ export default {
   mounted() {
     this.checkLogin();
     this.fetchCart();
+    this.fetchCategories();
   },
   methods: {
     async checkLogin() {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('https://48.209.24.37:5000/check_login', {
+          const response = await axios.get('http://localhost:5000/check_login', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.isLoggedIn = true;
@@ -69,13 +80,21 @@ export default {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('https://48.209.24.37:5000/cart', {
+          const response = await axios.get('http://localhost:5000/cart', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.cart = response.data.cart;
         } catch (error) {
           console.log('Error fetching cart');
         }
+      }
+    },
+    async fetchCategories() {
+      try {
+        const response = await axios.get('http://localhost:5000/products_by_category');
+        this.categories = response.data; // Bezpośrednio przypisz dane odpowiedzi
+      } catch (error) {
+        console.log('Error fetching categories:', error);
       }
     },
     logout() {
@@ -88,7 +107,6 @@ export default {
     },
   },
   watch: {
-    // Obserwacja zmiany tokena w localStorage
     async $route() {
       await this.checkLogin();
       await this.fetchCart();
@@ -114,6 +132,11 @@ export default {
 .navbar-center {
   display: flex;
   gap: 15px;
+}
+
+.categories {
+  display: flex;
+  gap: 10px;
 }
 
 .navbar-right {

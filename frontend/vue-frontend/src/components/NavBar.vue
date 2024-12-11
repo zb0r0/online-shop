@@ -25,6 +25,11 @@
           <button>Dodaj produkty</button>
         </router-link>
       </div>
+      <div v-if="isAdmin">
+        <router-link to="/analysis">
+          <button>Analiza</button>
+        </router-link>
+      </div>
       <nav v-if="isLoggedIn">
         <router-link to="/my-orders"><button>Moje zamówienia</button></router-link>
       </nav>

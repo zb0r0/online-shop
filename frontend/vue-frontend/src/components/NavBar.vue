@@ -17,14 +17,17 @@
         <router-link to="/cart">
           <button>Koszyk ({{ cartCount }})</button>
         </router-link>
-        <div v-if="isAdmin">
-          <router-link to="/add_product">
-            <button>Dodaj produkty</button>
-          </router-link>
-        </div>
       </div>
     </div>
     <div class="navbar-right">
+      <div v-if="isAdmin">
+        <router-link to="/add_product">
+          <button>Dodaj produkty</button>
+        </router-link>
+      </div>
+      <nav v-if="isLoggedIn">
+        <router-link to="/my-orders"><button>Moje zamówienia</button></router-link>
+      </nav>
       <div v-if="isLoggedIn">
         <button @click="logout">Wyloguj się</button>
       </div>

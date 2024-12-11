@@ -1,5 +1,6 @@
 from datetime import datetime
 from app import db
+from sqlalchemy import ForeignKey
 
 
 class Product(db.Model):
@@ -62,10 +63,14 @@ class Order(db.Model):
     phone = db.Column(db.String(9), nullable=False)
     total = db.Column(db.Numeric(10, 2), nullable=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-    status = db.Column(db.String(50), nullable=True, default='PENDING')
+    status = db.Column(db.String(50), nullable=True, default='SUCCESS')
+    user_id = db.Column(db.Integer, ForeignKey('users.id'), nullable=False)
+
+    user = db.relationship('User', backref='orders')
 
     def __repr__(self):
         return f'<Order {self.id}>'
+
 
 
 class OrderProduct(db.Model):

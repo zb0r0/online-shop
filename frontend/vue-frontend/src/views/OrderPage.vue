@@ -108,14 +108,17 @@ export default {
       }
 
       try {
-        const orderData = { ...this.form, total: this.calculatedTotal };  // Dodajemy obliczoną kwotę
+        const orderData = { ...this.form, total: this.calculatedTotal }; // Dodajemy obliczoną kwotę
         const response = await axios.post(
-          'http://localhost:5000/orders',  // Zmiana na właściwą trasę
+          'http://localhost:5000/orders', // Zmiana na właściwą trasę
           orderData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        // Przekierowanie do płatności
-        window.location.href = response.data.payment_url;
+
+        this.$router.push({
+          name: 'OrderSuccess',
+          params: { id: response.data.order_id }
+        });
       } catch (error) {
         alert(error.response?.data?.message || 'Wystąpił błąd');
       }

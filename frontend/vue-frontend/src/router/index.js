@@ -14,6 +14,7 @@ import AnalysisMenu from "@/views/AnalysisMenu.vue";
 import LowStock from "@/views/LowStock.vue";
 import TopCustomers from "@/views/TopCustomers.vue";
 import SalesTrends from "@/views/SalesTrends.vue";
+import EarningAnalysis from "@/views/EarningAnalysis.vue";
 
 const routes = [
   { path: '/', component: HomePage },
@@ -27,10 +28,12 @@ const routes = [
   { path: '/category/:category', component: Category },
   { path: "/order-success/:id", name: "OrderSuccess", component: OrderSuccessView },
   { path: "/my-orders", name: "MyOrders", component: MyOrdersView },
-  { path: "/analysis", component: AnalysisMenu },
-  { path: "/analysis/trends", component: SalesTrends },
-  { path: "/analysis/top-customers", component: TopCustomers },
-  { path: "/analysis/low-stock", component: LowStock },
+  { path: "/analysis", component: AnalysisMenu, children:[
+      { path: "/analysis/trends", component: SalesTrends },
+      { path: "/analysis/top-customers", component: TopCustomers },
+      { path: "/analysis/low-stock", component: LowStock },
+      { path: "/analysis/earnings", component: EarningAnalysis },] },
+
 ];
 
 const router = createRouter({

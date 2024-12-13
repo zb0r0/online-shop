@@ -1,46 +1,47 @@
 <template>
-  <div>
-    <h2>Analiza zarobków</h2>
+  <div class="earnings-container">
+    <h2 class="earnings-title">Analiza zarobków</h2>
 
-    <!-- Wybór zakresu dat -->
-    <div>
-      <label for="view-type">Wybierz typ widoku:</label>
-      <select v-model="viewType" @change="fetchEarnings">
-        <option value="year">Roczny</option>
-        <option value="month">Miesięczny</option>
-        <option value="day">Dzienny</option>
-      </select>
+    <div class="view-selection">
+      <div class="view-group">
+        <label for="view-type" class="view-label">Wybierz typ widoku:</label>
+        <select v-model="viewType" @change="fetchEarnings" class="view-input">
+          <option value="year">Roczny</option>
+          <option value="month">Miesięczny</option>
+          <option value="day">Dzienny</option>
+        </select>
+      </div>
 
-      <label v-if="viewType !== 'year'">Rok:</label>
-      <input
-        v-if="viewType !== 'year'"
-        type="number"
-        v-model="year"
-        min="2000"
-        :max="new Date().getFullYear()"
-        placeholder="Rok"
-        @change="fetchEarnings" />
+      <div class="view-group" v-if="viewType !== 'year'">
+        <label class="view-label">Rok:</label>
+        <input
+          type="number"
+          v-model="year"
+          min="2000"
+          :max="new Date().getFullYear()"
+          placeholder="Rok"
+          @change="fetchEarnings"
+          class="view-input"
+        />
+      </div>
 
-      <label v-if="viewType === 'day'">Miesiąc:</label>
-      <select
-        v-if="viewType === 'day'"
-        v-model="month"
-        @change="fetchEarnings">
-        <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
-      </select>
+      <div class="view-group" v-if="viewType === 'day'">
+        <label class="view-label">Miesiąc:</label>
+        <select v-model="month" @change="fetchEarnings" class="view-input">
+          <option v-for="m in months" :key="m.value" :value="m.value">{{ m.label }}</option>
+        </select>
+      </div>
     </div>
 
     <div v-if="earnings.length > 0">
-      <h3>Wyniki</h3>
-
-      <!-- Wykres słupkowy -->
+      <h3 class="results-title">Wyniki</h3>
       <div class="chart-container">
         <canvas id="earningsChart"></canvas>
       </div>
     </div>
 
     <div v-else>
-      <p>Brak danych dla wybranego okresu.</p>
+      <p class="no-data">Brak danych dla wybranego okresu.</p>
     </div>
   </div>
 </template>
@@ -111,7 +112,6 @@ export default {
           total_earnings: earningsMap.get(i + 1) || 0,
         }));
       } else if (this.viewType === 'month') {
-        // Miesięczny widok: dane miesięczne
         const earningsMap = new Map(rawEarnings.map(e => [e.month, e.total_earnings]));
 
         return this.months.map(m => ({
@@ -119,7 +119,6 @@ export default {
           total_earnings: earningsMap.get(m.value) || 0,
         }));
       } else if (this.viewType === 'year') {
-        // Roczny widok: dane roczne
         return rawEarnings.map(e => ({
           year: e.year,
           total_earnings: e.total_earnings,
@@ -196,9 +195,63 @@ export default {
 </script>
 
 <style scoped>
+.earnings-container {
+  max-width: 1000px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.earnings-title {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.view-selection {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.view-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.view-label {
+  font-size: 1rem;
+  color: #333;
+}
+
+.view-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
 .chart-container {
-  width: 70%;
+  width: 100%;
   height: 50vh;
   margin: 0 auto;
+}
+
+.results-title {
+  font-size: 1.5rem;
+  color: #2196f3;
+  margin-bottom: 15px;
+}
+
+.no-data {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #f44336;
 }
 </style>

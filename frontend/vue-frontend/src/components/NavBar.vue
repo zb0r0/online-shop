@@ -1,44 +1,41 @@
 <template>
   <nav class="navbar">
     <div class="navbar-left">
-      <router-link to="/">
-        <h1 class="navbar-title">Sklep odzieżowy</h1>
+      <router-link to="/" class="navbar-title">
+        Sklep odzieżowy
       </router-link>
     </div>
     <div class="navbar-center">
       <div class="categories">
         <div v-for="category in categories" :key="category" class="dropdown">
-          <router-link :to="'/category/' + category">
-            <button>{{ category }}</button>
+          <router-link :to="'/category/' + category" class="category-link">
+            {{ category }}
           </router-link>
         </div>
       </div>
-      <div v-if="isLoggedIn">
-        <router-link to="/cart">
-          <button>Koszyk ({{ cartCount }})</button>
+      <div v-if="isLoggedIn" class="cart-container">
+        <router-link to="/cart" class="cart-link">
+          Koszyk ({{ cartCount }})
         </router-link>
       </div>
     </div>
     <div class="navbar-right">
-      <div v-if="isAdmin">
-        <router-link to="/add_product">
-          <button>Dodaj produkty</button>
+      <div v-if="isAdmin" class="admin-container">
+        <router-link to="/add_product" class="category-link">
+          Dodaj produkty
+        </router-link>
+        <router-link to="/analysis" class="category-link">
+          Analiza
         </router-link>
       </div>
-      <div v-if="isAdmin">
-        <router-link to="/analysis">
-          <button>Analiza</button>
-        </router-link>
-      </div>
-      <nav v-if="isLoggedIn">
-        <router-link to="/my-orders"><button>Moje zamówienia</button></router-link>
-      </nav>
-      <div v-if="isLoggedIn">
-        <button @click="logout">Wyloguj się</button>
+      <div v-if="isLoggedIn" class="logged-in-container">
+        <router-link to="/my-orders" class="category-link">Moje zamówienia</router-link>
+        <button class="navbar-button logout-button" @click="logout">Wyloguj się</button>
       </div>
       <div v-else>
-        <router-link to="/login">Logowanie</router-link> |
-        <router-link to="/register">Rejestracja</router-link>
+        <router-link to="/login" class="auth-link">Logowanie</router-link>
+        |
+        <router-link to="/register" class="auth-link">Rejestracja</router-link>
       </div>
     </div>
   </nav>
@@ -55,7 +52,7 @@ export default {
       isAdmin: false,
       username: '',
       cart: [],
-      categories: [], // Kategorie produktów
+      categories: [],
     };
   },
   computed: {
@@ -67,6 +64,9 @@ export default {
     this.checkLogin();
     this.fetchCart();
     this.fetchCategories();
+    setInterval(() => {
+      this.fetchCart();
+    }, 5000); // Odświeżaj dane koszyka co 5 sekund
   },
   methods: {
     async checkLogin() {
@@ -100,7 +100,7 @@ export default {
     async fetchCategories() {
       try {
         const response = await axios.get('http://localhost:5000/products_by_category');
-        this.categories = response.data; // Bezpośrednio przypisz dane odpowiedzi
+        this.categories = response.data;
       } catch (error) {
         console.log('Error fetching categories:', error);
       }
@@ -111,7 +111,7 @@ export default {
       this.username = '';
       this.isAdmin = false;
       this.cart = [];
-      this.$router.push('/'); // Przeniesienie na stronę główną po wylogowaniu
+      this.$router.push('/');
     },
   },
   watch: {
@@ -128,47 +128,94 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #4caf50;
-  color: white;
+  background-color: #282c34;
+  color: #ffffff;
   padding: 10px 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-left h1 {
-  margin: 0;
+.navbar-title {
+  color: #61dafb;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
 }
 
 .navbar-center {
   display: flex;
-  gap: 15px;
+  gap: 20px;
 }
 
 .categories {
   display: flex;
-  gap: 10px;
+  gap: 15px;
+}
+
+.category-link {
+  text-decoration: none;
+  color: #ffffff;
+  background-color: #2196f3;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.category-link:hover {
+  background-color: #1e88e5;
+}
+
+.cart-container {
+  display: flex;
+  align-items: center;
+}
+
+.cart-link {
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: bold;
 }
 
 .navbar-right {
   display: flex;
+  gap: 15px;
   align-items: center;
+}
+
+.admin-container {
+  display: flex;
   gap: 10px;
 }
 
-button {
-  margin: 5px;
-  padding: 10px 15px;
-  background-color: #ffffff;
-  color: #4caf50;
+.logged-in-container {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.navbar-button {
+  color: #ffffff;
+  background-color: #4caf50;
   border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #eeeeee;
+.navbar-button:hover {
+  background-color: #45a049;
 }
 
-p {
-  margin: 0;
-  font-size: 1rem;
+.auth-link {
+  color: #ffffff;
+  text-decoration: none;
+}
+
+.logout-button {
+  background-color: #f44336;
+}
+
+.logout-button:hover {
+  background-color: #d32f2f;
 }
 </style>

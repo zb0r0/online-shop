@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h2>Podaj dane do wysyłki</h2>
-    <form @submit.prevent="submitOrder">
+  <div class="checkout-container">
+    <h2 class="checkout-title">Podaj dane do wysyłki</h2>
+    <form @submit.prevent="submitOrder" class="checkout-form">
       <div class="form-group">
         <label for="first_name">Imię:</label>
         <input v-model="form.first_name" type="text" id="first_name" required />
@@ -13,7 +13,7 @@
       </div>
 
       <div class="form-group">
-        <label for="last_name">E-mail:</label>
+        <label for="email">E-mail:</label>
         <input v-model="form.email" type="text" id="email" required />
       </div>
 
@@ -37,13 +37,12 @@
         <input v-model="form.phone" type="text" id="phone" required />
       </div>
 
-      <!-- Kwota do zapłaty jest obliczana automatycznie -->
       <div class="form-group">
         <label for="total">Kwota do zapłaty:</label>
-        <input :value="calculatedTotal" type="number" id="total" disabled />
+        <input :value="calculatedTotal" type="text" id="total" disabled />
       </div>
 
-      <button type="submit">Przejdź do płatności</button>
+      <button type="submit" class="submit-button">Przejdź do płatności</button>
     </form>
   </div>
 </template>
@@ -65,18 +64,17 @@ export default {
         phone: '',
         total: 0,
       },
-      cart: [],  // Produkty w koszyku
+      cart: [],
     };
   },
   computed: {
-    // Oblicza kwotę do zapłaty na podstawie produktów w koszyku
     calculatedTotal() {
       let total = 0;
       this.cart.forEach(item => {
-        total += item.price * item.quantity; // Załóżmy, że item.price i item.quantity są dostępne
+        total += item.price * item.quantity;
       });
-      return total.toFixed(2); // Zwracamy wartość w formacie z dwoma miejscami po przecinku
-    }
+      return total.toFixed(2);
+    },
   },
   mounted() {
     this.loadCart();
@@ -91,10 +89,10 @@ export default {
 
       try {
         const response = await axios.get('http://localhost:5000/cart', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         this.cart = response.data.cart;
-        this.form.total = response.data.total_price;  // Pobieramy łączną kwotę z backendu
+        this.form.total = response.data.total_price;
       } catch (error) {
         alert(error.response?.data?.message || 'Błąd podczas ładowania koszyka');
       }
@@ -108,16 +106,16 @@ export default {
       }
 
       try {
-        const orderData = { ...this.form, total: this.calculatedTotal }; // Dodajemy obliczoną kwotę
+        const orderData = { ...this.form, total: this.calculatedTotal };
         const response = await axios.post(
-          'http://localhost:5000/orders', // Zmiana na właściwą trasę
+          'http://localhost:5000/orders',
           orderData,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         this.$router.push({
           name: 'OrderSuccess',
-          params: { id: response.data.order_id }
+          params: { id: response.data.order_id },
         });
       } catch (error) {
         alert(error.response?.data?.message || 'Wystąpił błąd');
@@ -128,32 +126,64 @@ export default {
 </script>
 
 <style scoped>
-/* Dodajemy style, aby formularz był czytelny */
+.checkout-container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.checkout-title {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
 .form-group {
-  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-  display: block;
-  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 5px;
 }
 
 input {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
 }
 
-button {
-  padding: 0.75rem 1.5rem;
-  background-color: #007bff;
-  color: white;
+input:focus {
+  border-color: #2196f3;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  color: #ffffff;
   border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
   cursor: pointer;
-  width: 100%;
+  font-size: 1rem;
+  transition: background-color 0.3s;
 }
 
-button:hover {
-  background-color: #0056b3;
+.submit-button:hover {
+  background-color: #45a049;
 }
 </style>

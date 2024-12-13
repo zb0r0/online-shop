@@ -1,14 +1,21 @@
 <template>
-  <div>
-    <h2>Login</h2>
-    <form @submit.prevent="login">
-      <label for="username">Nazwa użytkownika:</label>
-      <input type="text" v-model="username" required /><br><br>
-      <label for="password">Hasło:</label>
-      <input type="password" v-model="password" required /><br><br>
-      <button type="submit">Login</button>
+  <div class="login-container">
+    <h2 class="login-title">Logowanie</h2>
+    <form @submit.prevent="login" class="login-form">
+      <div class="form-group">
+        <label for="username">Nazwa użytkownika:</label>
+        <input type="text" v-model="username" id="username" required />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Hasło:</label>
+        <input type="password" v-model="password" id="password" required />
+      </div>
+
+      <button type="submit" class="submit-button">Zaloguj się</button>
     </form>
-    <p v-if="message">{{ message }}</p>
+
+    <p v-if="message" class="message">{{ message }}</p>
   </div>
 </template>
 
@@ -45,3 +52,73 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-title {
+  font-size: 1.8rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 1rem;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+input {
+  font-size: 1rem;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  outline: none;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #2196f3;
+}
+
+.submit-button {
+  background-color: #4caf50;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s;
+}
+
+.submit-button:hover {
+  background-color: #45a049;
+}
+
+.message {
+  text-align: center;
+  font-size: 1rem;
+  color: #f44336;
+  margin-top: 15px;
+}
+</style>

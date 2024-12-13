@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <h2>Twoje zamówienia</h2>
-    <p>Poniżej znajdziesz listę swoich zamówień:</p>
+  <div class="orders-container">
+    <h2 class="orders-title">Twoje zamówienia</h2>
+    <p class="orders-message">Poniżej znajdziesz listę swoich zamówień:</p>
 
     <div v-if="orders.length > 0" class="orders-grid">
       <div
@@ -10,14 +10,14 @@
         :key="order.order_id"
         @click="goToOrderDetails(order.order_id)"
       >
-        <h3>Zamówienie #{{ order.order_id }}</h3>
+        <h3 class="order-id">Zamówienie #{{ order.order_id }}</h3>
         <p><strong>Data:</strong> {{ order.created_at }}</p>
         <p><strong>Kwota:</strong> {{ order.total }} PLN</p>
         <p><strong>Status:</strong> {{ order.status }}</p>
       </div>
     </div>
     <div v-else>
-      <p>Nie masz jeszcze żadnych zamówień.</p>
+      <p class="no-orders">Nie masz jeszcze żadnych zamówień.</p>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
   name: "MyOrdersView",
   data() {
     return {
-      orders: [], // Lista zamówień użytkownika
+      orders: [],
     };
   },
   mounted() {
@@ -63,32 +63,65 @@ export default {
 </script>
 
 <style scoped>
+.orders-container {
+  max-width: 1000px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.orders-title {
+  font-size: 2rem;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.orders-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin-bottom: 30px;
+}
+
 .orders-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 16px;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .order-card {
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  padding: 16px;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  padding: 20px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .order-card:hover {
-  transform: scale(1.02);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.order-card h3 {
-  margin: 0 0 8px;
-  font-size: 1.2rem;
+.order-id {
+  font-size: 1.5rem;
+  color: #2196f3;
+  margin-bottom: 10px;
 }
 
 .order-card p {
-  margin: 4px 0;
+  margin: 5px 0;
+  font-size: 1rem;
+  color: #333;
+}
+
+.no-orders {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #f44336;
 }
 </style>

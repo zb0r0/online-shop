@@ -1,18 +1,17 @@
 <template>
-  <div>
-    <h2>Twoje zamówienie zostało złożone pomyślnie!</h2>
-    <p>Dziękujemy za zakupy! Poniżej znajdziesz szczegóły swojego zamówienia:</p>
+  <div class="order-success-container">
+    <h2 class="order-success-title">Twoje zamówienie zostało złożone pomyślnie!</h2>
+    <p class="order-success-message">Dziękujemy za zakupy! Poniżej znajdziesz szczegóły swojego zamówienia:</p>
 
-    <!-- Szczegóły zamówienia -->
-    <div v-if="order">
-      <h3>Podsumowanie zamówienia</h3>
-      <ul>
+    <div v-if="order" class="order-details">
+      <h3 class="order-section-title">Podsumowanie zamówienia</h3>
+      <ul class="order-summary">
         <li><strong>Numer zamówienia:</strong> {{ order.order_id || 'Brak danych' }}</li>
         <li><strong>Data zamówienia:</strong> {{ order.created_at || 'Brak danych' }}</li>
         <li><strong>Kwota:</strong> {{ order.total ? `${order.total} PLN` : 'Brak danych' }}</li>
       </ul>
 
-      <h3>Produkty</h3>
+      <h3 class="order-section-title">Produkty</h3>
       <table class="order-table" v-if="order.products && order.products.length > 0">
         <thead>
           <tr>
@@ -31,24 +30,16 @@
           </tr>
         </tbody>
       </table>
-      <p v-else>Brak produktów w zamówieniu.</p>
+      <p v-else class="no-products">Brak produktów w zamówieniu.</p>
 
-      <h3>Dane do wysyłki</h3>
-      <ul>
-        <li>
-          <strong>Imię i nazwisko:</strong>
-          {{ order.first_name || 'Brak danych' }} {{ order.last_name || 'Brak danych' }}
-        </li>
-        <li>
-          <strong>Adres:</strong>
-          {{ order.address || 'Brak danych' }},
-          {{ order.zip_code || 'Brak danych' }}
-          {{ order.city || 'Brak danych' }}
-        </li>
+      <h3 class="order-section-title">Dane do wysyłki</h3>
+      <ul class="shipping-details">
+        <li><strong>Imię i nazwisko:</strong> {{ order.first_name || 'Brak danych' }} {{ order.last_name || 'Brak danych' }}</li>
+        <li><strong>Adres:</strong> {{ order.address || 'Brak danych' }}, {{ order.zip_code || 'Brak danych' }} {{ order.city || 'Brak danych' }}</li>
         <li><strong>Telefon:</strong> {{ order.phone || 'Brak danych' }}</li>
       </ul>
     </div>
-    <div v-else>
+    <div v-else class="loading-message">
       <p>Ładowanie szczegółów zamówienia...</p>
     </div>
   </div>
@@ -61,7 +52,7 @@ export default {
   name: "OrderSuccessView",
   data() {
     return {
-      order: null, // Szczegóły zamówienia
+      order: null,
     };
   },
   mounted() {
@@ -76,15 +67,13 @@ export default {
       }
 
       try {
-        // Pobierz szczegóły zamówienia na podstawie ID
-        const orderId = this.$route.params.id; // ID zamówienia przekazywane w URL
+        const orderId = this.$route.params.id;
         const response = await axios.get(
           `http://localhost:5000/orders/${orderId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // Przypisz dane z backendu do obiektu order
         this.order = response.data;
       } catch (error) {
         alert(
@@ -98,16 +87,60 @@ export default {
 </script>
 
 <style scoped>
+.order-success-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.order-success-title {
+  font-size: 2rem;
+  color: #4caf50;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.order-success-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 30px;
+}
+
+.order-section-title {
+  font-size: 1.5rem;
+  color: #2196f3;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.order-summary,
+.shipping-details {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-summary li,
+.shipping-details li {
+  margin-bottom: 10px;
+  font-size: 1rem;
+  color: #333;
+}
+
 .order-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  margin-top: 15px;
 }
 
 .order-table th,
 .order-table td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 10px;
   text-align: left;
 }
 
@@ -116,7 +149,15 @@ export default {
   font-weight: bold;
 }
 
-h3 {
-  margin-top: 1.5rem;
+.no-products {
+  font-size: 1rem;
+  color: #f44336;
+  margin-top: 10px;
+}
+
+.loading-message {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
 }
 </style>

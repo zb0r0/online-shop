@@ -50,7 +50,7 @@ export default {
       }
 
       try {
-        const response = await axios.get('http://localhost:5000/cart', {
+        const response = await axios.get('http://48.209.24.37:5000/cart', {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.cart = response.data.cart;
@@ -71,7 +71,7 @@ export default {
 
       try {
         await axios.put(
-          'http://localhost:5000/cart/update_quantity',
+          'http://48.209.24.37:5000/cart/update_quantity',
           {
             product_id: item.product_id,
             quantity: newQuantity,
@@ -95,7 +95,7 @@ export default {
 
       try {
         await axios.delete(
-          'http://localhost:5000/cart/remove',
+          'http://48.209.24.37:5000/cart/remove',
           {
             headers: { Authorization: `Bearer ${token}` },
             data: { product_id: item.product_id },

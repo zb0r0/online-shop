@@ -44,7 +44,7 @@ export default {
       }
 
       try {
-        const response = await axios.get("http://localhost:5000/user/orders", {
+        const response = await axios.get("http://48.209.24.37:5000/user/orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
         this.orders = response.data;

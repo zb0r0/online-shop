@@ -73,7 +73,7 @@ export default {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/check_login', {
+          const response = await axios.get('http://48.209.24.37:5000/check_login', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.isLoggedIn = true;
@@ -88,7 +88,7 @@ export default {
       const token = localStorage.getItem('token');
       if (token) {
         try {
-          const response = await axios.get('http://localhost:5000/cart', {
+          const response = await axios.get('http://48.209.24.37:5000/cart', {
             headers: { Authorization: `Bearer ${token}` },
           });
           this.cart = response.data.cart;
@@ -99,7 +99,7 @@ export default {
     },
     async fetchCategories() {
       try {
-        const response = await axios.get('http://localhost:5000/products_by_category');
+        const response = await axios.get('http://48.209.24.37:5000/products_by_category');
         this.categories = response.data;
       } catch (error) {
         console.log('Error fetching categories:', error);

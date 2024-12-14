@@ -93,7 +93,7 @@ export default {
       };
 
       try {
-        const response = await axios.get('http://localhost:5000/analysis/earnings', { params });
+        const response = await axios.get('http://48.209.24.37:5000/analysis/earnings', { params });
         this.earnings = this.processEarnings(response.data || []);
         this.$nextTick(() => this.renderChart());
       } catch (error) {

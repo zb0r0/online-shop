@@ -24,7 +24,7 @@ export default {
   },
   async created() {
     try {
-      const response = await axios.get('http://localhost:5000/analysis/top-customers');
+      const response = await axios.get('http://48.209.24.37:5000/analysis/top-customers');
       this.customers = response.data;
     } catch (error) {
       console.error(error);

@@ -57,8 +57,8 @@ export default {
     async fetchProducts() {
       try {
         const endpoint = this.category
-          ? `http://localhost:5000/category/${this.category}`
-          : 'http://localhost:5000/products';
+          ? `http://48.209.24.37:5000/category/${this.category}`
+          : 'http://48.209.24.37:5000/products';
         const response = await axios.get(endpoint);
         this.products = response.data;
       } catch (error) {
@@ -77,7 +77,7 @@ export default {
 
       try {
         await axios.post(
-          'http://localhost:5000/cart/add',
+          'http://48.209.24.37:5000/cart/add',
           { product_id: productId },
           { headers: { Authorization: `Bearer ${token}` } }
         );

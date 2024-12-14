@@ -69,7 +69,7 @@ export default {
       try {
         const orderId = this.$route.params.id;
         const response = await axios.get(
-          `http://localhost:5000/orders/${orderId}`,
+          `http://48.209.24.37:5000/orders/${orderId}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
